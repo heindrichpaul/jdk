@@ -71,25 +71,6 @@ public final class Optional<T> {
     private final T value;
 
     /**
-     * Returns an empty {@code Optional} instance.  No value is present for this
-     * {@code Optional}.
-     *
-     * @apiNote
-     * Though it may be tempting to do so, avoid testing if an object is empty
-     * by comparing with {@code ==} or {@code !=} against instances returned by
-     * {@code Optional.empty()}.  There is no guarantee that it is a singleton.
-     * Instead, use {@link #isEmpty()} or {@link #isPresent()}.
-     *
-     * @param <T> The type of the non-existent value
-     * @return an empty {@code Optional}
-     */
-    public static<T> Optional<T> empty() {
-        @SuppressWarnings("unchecked")
-        Optional<T> t = (Optional<T>) EMPTY;
-        return t;
-    }
-
-    /**
      * Constructs an instance with the described value.
      *
      * @param value the value to describe; it's the caller's responsibility to
@@ -114,21 +95,6 @@ public final class Optional<T> {
     }
 
     /**
-     * Returns an {@code Optional} describing the given value, if
-     * non-{@code null}, otherwise returns an empty {@code Optional}.
-     *
-     * @param value the possibly-{@code null} value to describe
-     * @param <T> the type of the value
-     * @return an {@code Optional} with a present value if the specified value
-     *         is non-{@code null}, otherwise an empty {@code Optional}
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> Optional<T> ofNullable(T value) {
-        return value == null ? (Optional<T>) EMPTY
-                             : new Optional<>(value);
-    }
-
-    /**
      * If a value is present, returns the value, otherwise throws
      * {@code NoSuchElementException}.
      *
@@ -146,26 +112,6 @@ public final class Optional<T> {
     }
 
     /**
-     * If a value is present, returns {@code true}, otherwise {@code false}.
-     *
-     * @return {@code true} if a value is present, otherwise {@code false}
-     */
-    public boolean isPresent() {
-        return value != null;
-    }
-
-    /**
-     * If a value is  not present, returns {@code true}, otherwise
-     * {@code false}.
-     *
-     * @return  {@code true} if a value is not present, otherwise {@code false}
-     * @since   11
-     */
-    public boolean isEmpty() {
-        return value == null;
-    }
-
-    /**
      * If a value is present, performs the given action with the value,
      * otherwise does nothing.
      *
@@ -177,6 +123,31 @@ public final class Optional<T> {
         if (value != null) {
             action.accept(value);
         }
+    }
+
+    /**
+     * If a value is empty, performs the given action with the value,
+     * otherwise does nothing.
+     *
+     * @param action the action to be performed, if a value is not present
+     * @throws NullPointerException if value is present and the given action is
+     *         {@code null}
+     */
+    public void ifEmpty(Consumer<? super T> action) {
+        if (isEmpty()) {
+            action.accept(value);
+        }
+    }
+
+    /**
+     * If a value is  not present, returns {@code true}, otherwise
+     * {@code false}.
+     *
+     * @return  {@code true} if a value is not present, otherwise {@code false}
+     * @since   11
+     */
+    public boolean isEmpty() {
+        return value == null;
     }
 
     /**
@@ -220,6 +191,25 @@ public final class Optional<T> {
     }
 
     /**
+     * Returns an empty {@code Optional} instance.  No value is present for this
+     * {@code Optional}.
+     *
+     * @apiNote
+     * Though it may be tempting to do so, avoid testing if an object is empty
+     * by comparing with {@code ==} or {@code !=} against instances returned by
+     * {@code Optional.empty()}.  There is no guarantee that it is a singleton.
+     * Instead, use {@link #isEmpty()} or {@link #isPresent()}.
+     *
+     * @param <T> The type of the non-existent value
+     * @return an empty {@code Optional}
+     */
+    public static<T> Optional<T> empty() {
+        @SuppressWarnings("unchecked")
+        Optional<T> t = (Optional<T>) EMPTY;
+        return t;
+    }
+
+    /**
      * If a value is present, returns an {@code Optional} describing (as if by
      * {@link #ofNullable}) the result of applying the given mapping function to
      * the value, otherwise returns an empty {@code Optional}.
@@ -259,6 +249,21 @@ public final class Optional<T> {
         } else {
             return Optional.ofNullable(mapper.apply(value));
         }
+    }
+
+    /**
+     * Returns an {@code Optional} describing the given value, if
+     * non-{@code null}, otherwise returns an empty {@code Optional}.
+     *
+     * @param value the possibly-{@code null} value to describe
+     * @param <T> the type of the value
+     * @return an {@code Optional} with a present value if the specified value
+     *         is non-{@code null}, otherwise an empty {@code Optional}
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Optional<T> ofNullable(T value) {
+        return value == null ? (Optional<T>) EMPTY
+                             : new Optional<>(value);
     }
 
     /**
@@ -313,6 +318,15 @@ public final class Optional<T> {
             Optional<T> r = (Optional<T>) supplier.get();
             return Objects.requireNonNull(r);
         }
+    }
+
+    /**
+     * If a value is present, returns {@code true}, otherwise {@code false}.
+     *
+     * @return {@code true} if a value is present, otherwise {@code false}
+     */
+    public boolean isPresent() {
+        return value != null;
     }
 
     /**
