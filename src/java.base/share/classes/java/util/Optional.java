@@ -124,7 +124,8 @@ public final class Optional<T> {
      */
     @SuppressWarnings("unchecked")
     public static <T> Optional<T> ofNullable(T value) {
-        return value == null ? (Optional<T>) EMPTY
+        return value == null
+                ? (Optional<T>) EMPTY
                 : new Optional<>(value);
     }
 
